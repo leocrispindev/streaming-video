@@ -6,7 +6,7 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 )
 
-func CreateConsumer(groupID string, topics []string) {
+func CreateConsumer(groupID string, topics []string) *kafka.Consumer {
 
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers": os.Getenv("KAFKA_HOST"),
@@ -23,4 +23,6 @@ func CreateConsumer(groupID string, topics []string) {
 	if err != nil {
 		panic(err)
 	}
+
+	return c
 }
