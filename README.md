@@ -20,6 +20,7 @@ Streaming não é um conceito novo, mas vem crescendo e se tornando cada vez mai
 - ``WebSocket``
 
 ## Arquitetura
+![system-design-v2(2) drawio](https://user-images.githubusercontent.com/43520784/224572318-e25ac206-ee9d-4e9e-8064-5e802c57028d.png)
 
 
 
