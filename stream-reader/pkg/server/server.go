@@ -24,4 +24,5 @@ func Init() {
 
 	})
 
+	fmt.Println("Server OK")
 }
