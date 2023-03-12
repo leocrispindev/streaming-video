@@ -1,11 +1,13 @@
 package reader
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
 
 	vidio "github.com/AlexEidt/Vidio"
+	commons "github.com/NygmaC/streamming-video/stream-go-commons/pkg/model"
 	"github.com/NygmaC/streamming-video/stream-reader/internal/model"
 	"github.com/NygmaC/streamming-video/stream-reader/internal/producer"
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
@@ -59,10 +61,19 @@ func notifyWritter(p model.Proccess) {
 
 	topic := "myTopic"
 
+	msg := commons.NotifyProccess{
+		ProccessID: string(p.Id),
+		VideoName:  p.VideoName,
+		Action:     0,
+	}
+
+	msgJson, _ := json.Marshal(msg)
+
 	prod.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{
 			Topic: &topic, Partition: kafka.PartitionAny,
 		},
+		Value: []byte(msgJson),
 	}, nil)
 
 }
