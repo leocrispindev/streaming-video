@@ -1,6 +1,7 @@
 package reader
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -8,6 +9,8 @@ import (
 
 	vidio "github.com/AlexEidt/Vidio"
 	commons "github.com/NygmaC/streamming-video/stream-go-commons/pkg/model"
+	"github.com/NygmaC/streamming-video/stream-reader/internal/admin"
+	"github.com/NygmaC/streamming-video/stream-reader/internal/dispatcher"
 	"github.com/NygmaC/streamming-video/stream-reader/internal/model"
 	"github.com/NygmaC/streamming-video/stream-reader/internal/producer"
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
@@ -31,6 +34,8 @@ var reader Reader
 
 var prod *kafka.Producer
 
+var notifyWritterTopic string
+
 func Init() {
 
 	// TODO definir o storage via property
@@ -39,6 +44,9 @@ func Init() {
 	}
 
 	fmt.Println("Reader OK")
+
+	notifyWritterTopic = os.Getenv("KAFKA_NOTIFY_WRITTER_TOPIC")
+
 	//Define o reader
 	prod = producer.GetProducer()
 
@@ -47,22 +55,30 @@ func Init() {
 // Monta o paco de de frames do video, enviar para o producer
 func Proccess(p model.Proccess) {
 
-	videoname := p.VideoName
+	// TODO verificar existencia do topico para o processo
+	// se não existir, criar
+	// Após criar notificar o writter
+	topicName, err := admin.CreateTopic(context.Background(), 1, "proccess-stream-"+p.VideoName)
 
-	fmt.Println(videoname)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	notifyWritter(p)
-	read(videoname)
+	p.TopicName = topicName
+
+	go notifyWritter(p)
+	video, err := readFile(p)
+
+	go dispatcher.Start(prod, video, p)
 }
 
 // Envia uma notificação para o Writter de que um processo vai iniciar
 //Writter deverá criar um consumer para o processo
 func notifyWritter(p model.Proccess) {
 
-	topic := "myTopic"
-
+	// TODO passar o nome do topico do processo que deverá ser iniciado
 	msg := commons.NotifyProccess{
-		ProccessID: string(p.Id),
+		ProccessID: fmt.Sprint(p.Id),
 		VideoName:  p.VideoName,
 		Action:     0,
 	}
@@ -71,26 +87,21 @@ func notifyWritter(p model.Proccess) {
 
 	prod.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{
-			Topic: &topic, Partition: kafka.PartitionAny,
+			Topic: &notifyWritterTopic, Partition: kafka.PartitionAny,
 		},
 		Value: []byte(msgJson),
 	}, nil)
 
 }
 
-// Faz a leitura do arquivo, e envia os frames para o writter
-func read(videoname string) {
-	video, err := reader.read(videoname)
+// Faz a leitura do arquivo
+func readFile(p model.Proccess) (*vidio.Video, error) {
+	video, err := reader.read(p.VideoName)
 
 	if err != nil {
 		log.Println("Error", err)
-		return
+		return nil, err
 	}
 
-	for video.Read() {
-
-		// O pacote é definido atraves da quantidade de FPS, 1s tem X fps
-		// um pacote deve ter no minimo 2 segundos
-		//TODO envia os buffers para o writter do processo
-	}
+	return video, nil
 }
