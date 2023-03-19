@@ -2,6 +2,7 @@ package dispatcher
 
 import (
 	"encoding/json"
+	"fmt"
 
 	vidio "github.com/AlexEidt/Vidio"
 	model_commons "github.com/NygmaC/streamming-video/stream-go-commons/pkg/model"
@@ -22,6 +23,8 @@ func Start(p *kafka.Producer, video *vidio.Video, proccess model.Proccess) {
 
 	index := 0
 
+	fmt.Println("Proccess started for topic: " + proccess.TopicName)
+
 	for video.Read() {
 
 		v := model_commons.MessageProccess{
@@ -32,25 +35,35 @@ func Start(p *kafka.Producer, video *vidio.Video, proccess model.Proccess) {
 
 		json, _ := json.Marshal(v)
 
-		p.Produce(createMessage(proccess.TopicName, json), nil)
+		fmt.Println(len(v.Value))
+
+		err := p.Produce(createMessage(proccess.TopicName, json), nil)
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		fmt.Println("Frame send to topic: " + proccess.TopicName)
 
 		index += 1
 	}
 
-	finish(p, proccess)
+	finish(p, proccess, index)
 }
 
-func finish(p *kafka.Producer, proccess model.Proccess) {
+func finish(p *kafka.Producer, proccess model.Proccess, index int) {
 
 	v := model_commons.MessageProccess{
 		Value:  []byte{},
-		Index:  0,
+		Index:  index,
 		Action: 1,
 	}
 
 	json, _ := json.Marshal(v)
 
 	p.Produce(createMessage(proccess.TopicName, json), nil)
+
+	fmt.Println("Proccess is finished: " + proccess.TopicName)
 }
 
 func createMessage(topic string, value []byte) *kafka.Message {
