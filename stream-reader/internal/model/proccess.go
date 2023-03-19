@@ -5,6 +5,7 @@ type Proccess struct {
 	VideoName  string     `json:"videoName"`
 	Connection Connection `json:"connection,omitempty"`
 	Id         int64
+	TopicName  string
 }
 
 type Connection struct {
