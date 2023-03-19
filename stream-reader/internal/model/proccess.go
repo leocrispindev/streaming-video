@@ -4,8 +4,8 @@ type Proccess struct {
 	Session    string     `json:"session"`
 	VideoName  string     `json:"videoName"`
 	Connection Connection `json:"connection,omitempty"`
-	Id         int64
-	TopicName  string
+	Id         int64      `json:"id,omitempty"`
+	TopicName  string     `json:"topicName,omitempty"`
 }
 
 type Connection struct {
