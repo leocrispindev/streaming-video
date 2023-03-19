@@ -69,6 +69,11 @@ func Proccess(p model.Proccess) {
 	go notifyWritter(p)
 	video, err := readFile(p)
 
+	if err != nil {
+		println("Error on read file")
+		return
+	}
+
 	go dispatcher.Start(prod, video, p)
 }
 
@@ -81,6 +86,7 @@ func notifyWritter(p model.Proccess) {
 		ProccessID: fmt.Sprint(p.Id),
 		VideoName:  p.VideoName,
 		Action:     0,
+		TopicName:  p.TopicName,
 	}
 
 	msgJson, _ := json.Marshal(msg)
@@ -102,6 +108,8 @@ func readFile(p model.Proccess) (*vidio.Video, error) {
 		log.Println("Error", err)
 		return nil, err
 	}
+
+	fmt.Printf("Video read: %s", video.FileName())
 
 	return video, nil
 }
