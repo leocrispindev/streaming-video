@@ -20,6 +20,10 @@ func Init() {
 	start()
 }
 
+func GetConsumerInstance() *kafka.Consumer {
+	return proccessConsumer
+}
+
 func start() {
 	run()
 
