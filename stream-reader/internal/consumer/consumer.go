@@ -3,7 +3,6 @@ package consumer
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 
 	"github.com/NygmaC/streamming-video/stream-go-commons/pkg/broker/consumer"
 	"github.com/NygmaC/streamming-video/stream-reader/internal/model"
@@ -26,7 +25,6 @@ func GetConsumerInstance() *kafka.Consumer {
 
 func start() {
 	run()
-
 }
 
 func run() {
@@ -38,26 +36,27 @@ func run() {
 		switch e := ev.(type) {
 		case *kafka.Message:
 
+			fmt.Println("Get message")
 			var streamProccess = model.Proccess{}
 
-			parse(e.Value, &streamProccess)
+			err := parse(e.Value, &streamProccess)
+
+			if err != nil {
+				fmt.Println(err)
+				return
+
+			}
 
 			go reader.Proccess(streamProccess)
 
 		case kafka.Error:
-			fmt.Fprintf(os.Stderr, "%% Error: %v\n", e)
-
+			fmt.Println(e)
 			//proccessConsumer.Close()
-
 		}
 	}
 }
 
-func parse(value []byte, p *model.Proccess) {
-	err := json.Unmarshal(value, p)
+func parse(value []byte, p *model.Proccess) error {
 
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "%% Error convert Proccess data: %v\n", err)
-	}
-
+	return json.Unmarshal(value, p)
 }
