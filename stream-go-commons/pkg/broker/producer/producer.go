@@ -11,7 +11,8 @@ func CreateProducer(clientID string) *kafka.Producer {
 	p, err := kafka.NewProducer(&kafka.ConfigMap{
 		"bootstrap.servers": os.Getenv("KAFKA_HOST"),
 		"client.id":         clientID,
-		"acks":              "all"})
+		"acks":              "all",
+		"max.request.size":  3000000})
 
 	if err != nil {
 		fmt.Printf("Failed to create producer: %s\n", err)
