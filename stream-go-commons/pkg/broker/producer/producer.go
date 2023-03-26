@@ -1,19 +1,50 @@
 package producer
 
 import (
-	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
+	"log"
+	"os"
+
+	"github.com/Shopify/sarama"
 )
 
-func CreateProducer(clientID string) *kafka.Producer {
-	p, err := kafka.NewProducer(&kafka.ConfigMap{
-		"bootstrap.servers": "localhost:9092",
-		"max.message.bytes": "2000000",
+type ProducerInterface interface {
+	SendMessage(topic string, value []byte) error
+}
+
+type Producer struct {
+	ProducerImpl sarama.SyncProducer
+}
+
+func (p *Producer) SendMessage(topic string, value []byte) error {
+
+	_, _, err := p.ProducerImpl.SendMessage(&sarama.ProducerMessage{
+		Topic: topic,
+		Value: sarama.ByteEncoder(value),
 	})
+
+	return err
+}
+
+func getProducerConfig() *sarama.Config {
+	producerConfig := sarama.NewConfig()
+
+	producerConfig.Version = sarama.V2_2_0_0 // versão do Kafka
+	producerConfig.Producer.Return.Successes = true
+	producerConfig.Producer.MaxMessageBytes = 3000000
+
+	return producerConfig
+}
+
+func CreateSyncProducer() Producer {
+
+	producer, err := sarama.NewSyncProducer([]string{os.Getenv("KAFKA_HOST")}, getProducerConfig())
 	if err != nil {
-		panic(err)
+		log.Fatalln("Erro ao criar produtor:", err)
 	}
-	defer p.Close()
+
+	p := Producer{
+		ProducerImpl: producer,
+	}
 
 	return p
-
 }

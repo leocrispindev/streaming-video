@@ -5,4 +5,5 @@ type NotifyProccess struct {
 	VideoName  string
 	Action     int
 	TopicName  string
+	VideoId    int
 }
