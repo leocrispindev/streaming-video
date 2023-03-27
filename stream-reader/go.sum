@@ -3,12 +3,10 @@ cloud.google.com/go v0.34.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMT
 github.com/AlexEidt/Vidio v1.4.2 h1:+nNaPkVEPcvtgmcJI/0u/Wu0j1IeFFbXkaQIVVewJuU=
 github.com/AlexEidt/Vidio v1.4.2/go.mod h1:djhIMnWMqPrC3X6nB6ymGX6uWWlgw+VayYGKE1bNwmI=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
-github.com/NygmaC/streamming-video/stream-go-commons v0.0.0-20230311174943-eb40c49879da h1:nbgu2wDwyXiXEpy+U/eOkAuhJ0Q1hpHDM22p3nTiQKA=
-github.com/NygmaC/streamming-video/stream-go-commons v0.0.0-20230311174943-eb40c49879da/go.mod h1:+gngENfDhh1GBJPyD8Z4Ph2kOhS9EZprCwTyPSsnPP0=
-github.com/NygmaC/streamming-video/stream-go-commons v0.0.0-20230312190316-3a068338db5b h1:sxswClllrl8i9vMuVA9DnHeW9oJSdkD0K9BMElu165E=
-github.com/NygmaC/streamming-video/stream-go-commons v0.0.0-20230312190316-3a068338db5b/go.mod h1:+gngENfDhh1GBJPyD8Z4Ph2kOhS9EZprCwTyPSsnPP0=
-github.com/NygmaC/streamming-video/stream-go-commons v0.0.0-20230318224610-23d67e09328d h1:wfjWDzO51l9i/nj+6LeCiZxwmCWPDTFPlCT/tv1Hs3w=
-github.com/NygmaC/streamming-video/stream-go-commons v0.0.0-20230318224610-23d67e09328d/go.mod h1:+gngENfDhh1GBJPyD8Z4Ph2kOhS9EZprCwTyPSsnPP0=
+github.com/NygmaC/streamming-video/stream-go-commons v0.0.0-20230321022016-2795555376f2 h1:+kHn5knkZZ9QiUGn3XGOzg7wxZLYUH6V71JnVYFQ24s=
+github.com/NygmaC/streamming-video/stream-go-commons v0.0.0-20230321022016-2795555376f2/go.mod h1:+gngENfDhh1GBJPyD8Z4Ph2kOhS9EZprCwTyPSsnPP0=
+github.com/NygmaC/streamming-video/stream-go-commons v0.0.0-20230326141440-65508779db13 h1:Tug5JIpHSMxcnBzjGbCU64KGMUzswLHefrD/NPRIML0=
+github.com/NygmaC/streamming-video/stream-go-commons v0.0.0-20230326141440-65508779db13/go.mod h1:RMAVDUyNdXLTey1/c0QztvUtkymZlhi+GV+B8omvovI=
 github.com/actgardner/gogen-avro/v10 v10.1.0/go.mod h1:o+ybmVjEa27AAr35FRqU98DJu1fXES56uXniYFv4yDA=
 github.com/actgardner/gogen-avro/v10 v10.2.1/go.mod h1:QUhjeHPchheYmMDni/Nx7VB0RsT/ee8YIgGY/xpEQgQ=
 github.com/actgardner/gogen-avro/v9 v9.1.0/go.mod h1:nyTj6wPqDJoxM3qdnjcLv+EnMDSDFqE0qDpva2QRmKc=

@@ -13,8 +13,8 @@ import (
 var proccessConsumer *kafka.Consumer
 
 func Init() {
-	// {"videoName":"teste1", "session":"aaaaaa", "connection": {}}
-	proccessConsumer = consumer.CreateConsumer("process-group", []string{"video-stream-proccess"})
+	// {"videoName":"video2.mp4", "session":"aaaaaa", "connection": {}}
+	proccessConsumer = consumer.CreateConsumer()
 
 	start()
 }
