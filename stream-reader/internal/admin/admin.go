@@ -1,47 +1,17 @@
 package admin
 
 import (
-	"context"
-	"fmt"
-	"os"
-
-	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
+	commonsAdmin "github.com/NygmaC/streamming-video/stream-go-commons/pkg/broker/admin"
 )
 
-var kAdmin *kafka.AdminClient
+var kAdmin commonsAdmin.AdminInterface
 
 func Init() {
-	createAdminFromConsumer()
+	commonsAdmin.InitAdmin()
+
+	kAdmin = commonsAdmin.GetAdmin()
 }
 
-func createAdminFromConsumer() {
-
-	kAdminResult, err := kafka.NewAdminClient(&kafka.ConfigMap{
-		"bootstrap.servers": os.Getenv("KAFKA_HOST"),
-	})
-
-	if err != nil {
-		fmt.Printf("Failed to create Admin client: %s\n", err)
-		os.Exit(1)
-	}
-
-	kAdmin = kAdminResult
-
-	println("Admin OK")
-}
-
-func CreateTopic(ctx context.Context, numberParititon int, topicName string) (string, error) {
-
-	topic := kafka.TopicSpecification{
-		Topic:         topicName,
-		NumPartitions: numberParititon,
-	}
-
-	result, err := kAdmin.CreateTopics(ctx, []kafka.TopicSpecification{topic})
-
-	if err != nil {
-		return "", err
-	}
-
-	return result[0].Topic, nil
+func GetAdminInstance() commonsAdmin.AdminInterface {
+	return kAdmin
 }

@@ -2,8 +2,6 @@ module github.com/NygmaC/streamming-video/stream-go-commons
 
 go 1.17
 
-require github.com/confluentinc/confluent-kafka-go/v2 v2.0.2
-
 require (
 	github.com/AlexEidt/Vidio v1.4.2
 	github.com/Shopify/sarama v1.38.1

@@ -5,9 +5,9 @@ import (
 	"fmt"
 
 	vidio "github.com/AlexEidt/Vidio"
+	prodCommons "github.com/NygmaC/streamming-video/stream-go-commons/pkg/broker/producer"
 	model_commons "github.com/NygmaC/streamming-video/stream-go-commons/pkg/model"
 	"github.com/NygmaC/streamming-video/stream-reader/internal/model"
-	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 )
 
 var packageSize int
@@ -19,7 +19,7 @@ func Init() {
 // 0 - Add messages in buffer on writter
 // 1 - The dispatcher is over
 
-func Start(p *kafka.Producer, video *vidio.Video, proccess model.Proccess) {
+func Start(p prodCommons.Producer, video *vidio.Video, proccess model.Proccess) {
 
 	index := 0
 
@@ -35,9 +35,7 @@ func Start(p *kafka.Producer, video *vidio.Video, proccess model.Proccess) {
 
 		json, _ := json.Marshal(v)
 
-		fmt.Println(len(v.Value))
-
-		err := p.Produce(createMessage(proccess.TopicName, json), nil)
+		err := p.SendMessage(proccess.TopicName, json)
 
 		if err != nil {
 			fmt.Println(err)
@@ -51,7 +49,7 @@ func Start(p *kafka.Producer, video *vidio.Video, proccess model.Proccess) {
 	finish(p, proccess, index)
 }
 
-func finish(p *kafka.Producer, proccess model.Proccess, index int) {
+func finish(p prodCommons.Producer, proccess model.Proccess, index int) {
 
 	v := model_commons.MessageProccess{
 		Value:  []byte{},
@@ -61,19 +59,7 @@ func finish(p *kafka.Producer, proccess model.Proccess, index int) {
 
 	json, _ := json.Marshal(v)
 
-	p.Produce(createMessage(proccess.TopicName, json), nil)
+	p.SendMessage(proccess.TopicName, json)
 
 	fmt.Println("Proccess is finished: " + proccess.TopicName)
-}
-
-func createMessage(topic string, value []byte) *kafka.Message {
-
-	kM := kafka.Message{
-		TopicPartition: kafka.TopicPartition{
-			Topic: &topic, Partition: kafka.PartitionAny,
-		},
-		Value: value,
-	}
-
-	return &kM
 }
