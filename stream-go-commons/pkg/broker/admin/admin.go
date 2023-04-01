@@ -21,7 +21,7 @@ var a Admin
 func (a *Admin) CreateTopic(name string, numPartitions int) error {
 	err := a.AdminImpl.CreateTopic(name, &sarama.TopicDetail{
 		NumPartitions:     int32(numPartitions),
-		ReplicationFactor: 1,
+		ReplicationFactor: 10,
 	}, false)
 
 	return err
