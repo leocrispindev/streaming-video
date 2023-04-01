@@ -18,10 +18,10 @@ type Admin struct {
 
 var a Admin
 
-func (a *Admin) CreateTopic(name string, numPartitions int) error {
+func (a *Admin) CreateTopic(name string, numPartitions int, numReplication int) error {
 	err := a.AdminImpl.CreateTopic(name, &sarama.TopicDetail{
 		NumPartitions:     int32(numPartitions),
-		ReplicationFactor: 10,
+		ReplicationFactor: int16(numReplication),
 	}, false)
 
 	return err
