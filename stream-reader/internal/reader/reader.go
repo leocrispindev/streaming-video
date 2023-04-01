@@ -1,7 +1,6 @@
 package reader
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -9,11 +8,10 @@ import (
 
 	vidio "github.com/AlexEidt/Vidio"
 	commons "github.com/NygmaC/streamming-video/stream-go-commons/pkg/model"
-	"github.com/NygmaC/streamming-video/stream-reader/internal/admin"
+	adminInternal "github.com/NygmaC/streamming-video/stream-reader/internal/admin"
 	"github.com/NygmaC/streamming-video/stream-reader/internal/dispatcher"
 	"github.com/NygmaC/streamming-video/stream-reader/internal/model"
-	"github.com/NygmaC/streamming-video/stream-reader/internal/producer"
-	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
+	prodInternal "github.com/NygmaC/streamming-video/stream-reader/internal/producer"
 )
 
 // Struct for local storage configuration
@@ -27,12 +25,10 @@ type Reader interface {
 }
 
 func (s storageLocal) read(filename string) (*vidio.Video, error) {
-	return vidio.NewVideo(s.BasePath + filename)
+	return vidio.NewVideo(s.BasePath + "/" + filename)
 }
 
 var reader Reader
-
-var prod *kafka.Producer
 
 var notifyWritterTopic string
 
@@ -47,9 +43,6 @@ func Init() {
 
 	notifyWritterTopic = os.Getenv("KAFKA_NOTIFY_WRITTER_TOPIC")
 
-	//Define o reader
-	prod = producer.GetProducer()
-
 }
 
 // Monta o paco de de frames do video, enviar para o producer
@@ -58,11 +51,16 @@ func Proccess(p model.Proccess) {
 	// TODO verificar existencia do topico para o processo
 	// se não existir, criar
 	// Após criar notificar o writter
-	topicName, err := admin.CreateTopic(context.Background(), 1, "proccess-stream-"+p.VideoName)
+
+	topicName := "proccess-stream-" + p.VideoName
+
+	err := adminInternal.GetAdminInstance().CreateTopic(topicName, 1)
 
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	fmt.Println("Created topic: " + topicName)
 
 	p.TopicName = topicName
 
@@ -74,11 +72,11 @@ func Proccess(p model.Proccess) {
 		return
 	}
 
-	go dispatcher.Start(prod, video, p)
+	go dispatcher.Start(prodInternal.ProducerLocal, video, p)
 }
 
 // Envia uma notificação para o Writter de que um processo vai iniciar
-//Writter deverá criar um consumer para o processo
+// Writter deverá criar um consumer para o processo
 func notifyWritter(p model.Proccess) {
 
 	// TODO passar o nome do topico do processo que deverá ser iniciado
@@ -91,13 +89,7 @@ func notifyWritter(p model.Proccess) {
 
 	msgJson, _ := json.Marshal(msg)
 
-	prod.Produce(&kafka.Message{
-		TopicPartition: kafka.TopicPartition{
-			Topic: &notifyWritterTopic, Partition: kafka.PartitionAny,
-		},
-		Value: []byte(msgJson),
-	}, nil)
-
+	prodInternal.ProducerLocal.SendMessage(notifyWritterTopic, msgJson)
 }
 
 // Faz a leitura do arquivo

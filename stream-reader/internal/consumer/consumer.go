@@ -7,52 +7,33 @@ import (
 	"github.com/NygmaC/streamming-video/stream-go-commons/pkg/broker/consumer"
 	"github.com/NygmaC/streamming-video/stream-reader/internal/model"
 	"github.com/NygmaC/streamming-video/stream-reader/internal/reader"
-	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
+	"github.com/Shopify/sarama"
 )
 
-var proccessConsumer *kafka.Consumer
+var proccessConsumer consumer.Consumer
 
 func Init() {
 	// {"videoName":"video2.mp4", "session":"aaaaaa", "connection": {}}
-	proccessConsumer = consumer.CreateConsumer()
-
-	start()
+	proccessConsumer = consumer.CreateConsumer("", "stream-proccess")
+	proccessConsumer.ReadMessage(handleMessage)
 }
 
-func GetConsumerInstance() *kafka.Consumer {
-	return proccessConsumer
-}
-
-func start() {
-	run()
-}
-
-func run() {
+func handleMessage(msgs <-chan *sarama.ConsumerMessage) {
 	fmt.Println("Consumer OK")
 
-	for {
-		ev := proccessConsumer.Poll(3000)
+	for msg := range msgs {
+		var streamProccess = model.Proccess{}
 
-		switch e := ev.(type) {
-		case *kafka.Message:
+		err := parse(msg.Value, &streamProccess)
 
-			fmt.Println("Get message")
-			var streamProccess = model.Proccess{}
+		if err != nil {
+			fmt.Println(err)
+			return
 
-			err := parse(e.Value, &streamProccess)
-
-			if err != nil {
-				fmt.Println(err)
-				return
-
-			}
-
-			go reader.Proccess(streamProccess)
-
-		case kafka.Error:
-			fmt.Println(e)
-			//proccessConsumer.Close()
 		}
+
+		go reader.Proccess(streamProccess)
+
 	}
 }
 
