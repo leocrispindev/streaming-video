@@ -8,7 +8,7 @@ import (
 )
 
 type AdminInterface interface {
-	CreateTopic(name string, numPartitions int) error
+	CreateTopic(name string, numPartitions int, numReplication int) error
 	DeleteTopic(name string) error
 }
 
