@@ -9,6 +9,7 @@ import (
 
 type ProducerInterface interface {
 	SendMessage(topic string, value []byte) error
+	SendMessageToPartition(topic string, value []byte, partition int32) error
 }
 
 type Producer struct {
@@ -20,6 +21,17 @@ func (p *Producer) SendMessage(topic string, value []byte) error {
 	_, _, err := p.ProducerImpl.SendMessage(&sarama.ProducerMessage{
 		Topic: topic,
 		Value: sarama.ByteEncoder(value),
+	})
+
+	return err
+}
+
+func (p *Producer) SendMessageToPartition(topic string, value []byte, part int32) error {
+
+	_, _, err := p.ProducerImpl.SendMessage(&sarama.ProducerMessage{
+		Topic:     topic,
+		Value:     sarama.ByteEncoder(value),
+		Partition: part,
 	})
 
 	return err
