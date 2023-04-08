@@ -10,6 +10,7 @@ type NotifyProccess struct {
 }
 
 type VideoOptions struct {
+	Segments int     // Total of segments
 	Width    int     // Width of frames.
 	Height   int     // Height of frames.
 	Depth    int     // Depth of frames.
