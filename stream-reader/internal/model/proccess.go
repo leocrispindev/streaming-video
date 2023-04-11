@@ -6,6 +6,7 @@ type Proccess struct {
 	Connection Connection `json:"connection,omitempty"`
 	Id         int64      `json:"id,omitempty"`
 	TopicName  string     `json:"topicName,omitempty"`
+	Segments   int
 }
 
 type Connection struct {

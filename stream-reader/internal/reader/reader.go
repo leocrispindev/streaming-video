@@ -54,23 +54,28 @@ func Proccess(p model.Proccess) {
 
 	topicName := "proccess-stream-" + p.VideoName
 
-	err := adminInternal.GetAdminInstance().CreateTopic(topicName, 1)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println("Created topic: " + topicName)
-
-	p.TopicName = topicName
-
-	go notifyWritter(p)
 	video, err := readFile(p)
 
 	if err != nil {
 		println("Error on read file")
 		return
 	}
+
+	segments := video.Frames() / 150
+
+	err = adminInternal.GetAdminInstance().CreateTopic(topicName, int(segments), 1)
+
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	fmt.Println("Created topic: " + topicName)
+
+	p.TopicName = topicName
+
+	p.Segments = segments
+
+	go notifyWritter(p)
 
 	go dispatcher.Start(prodInternal.ProducerLocal, video, p)
 }
@@ -85,6 +90,11 @@ func notifyWritter(p model.Proccess) {
 		VideoName:  p.VideoName,
 		Action:     0,
 		TopicName:  p.TopicName,
+		VideoId:    123,
+		VideoOptions: commons.VideoOptions{
+			Segments: p.Segments,
+		},
+		// ENviar a quantidade de segmentos
 	}
 
 	msgJson, _ := json.Marshal(msg)
