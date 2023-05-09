@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/NygmaC/streamming-video/stream-go-commons v0.0.0-20230411221621-a9b97fbbd249
 	github.com/Shopify/sarama v1.38.1
+	github.com/fsnotify/fsnotify v1.6.0
 	github.com/joho/godotenv v1.5.1
 )
 
@@ -27,4 +28,5 @@ require (
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa // indirect
 	golang.org/x/net v0.5.0 // indirect
+	golang.org/x/sys v0.4.0 // indirect
 )
