@@ -5,5 +5,5 @@ data class VideoInfo(val titulo : String, var descricao: String,
                      val duration: Double,
                      var thumbName: String,
                      val height: Int,
-                     var withg: String
+                     var width: Int
 )

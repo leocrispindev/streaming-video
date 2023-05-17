@@ -18,10 +18,8 @@ dependencies {
     testImplementation(kotlin("test"))
     implementation("io.ktor:ktor-server-netty:1.6.0")
     implementation("io.ktor:ktor-html-builder:1.6.0")
+    implementation("mysql:mysql-connector-java:8.0.15")
     implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.7.2")
-    implementation("org.ktorm:ktorm-core:3.6.1")
-    implementation("org.ktorm:ktorm-support-mysql:3.6.1")
-    implementation("mysql:mysql-connector-java:8.0.25")
 }
 
 tasks.test {

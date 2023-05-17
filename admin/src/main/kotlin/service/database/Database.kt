@@ -3,7 +3,7 @@ package service.database
 import java.sql.Connection
 import java.sql.DriverManager
 
-class Database {
+object Database {
     private lateinit var conn : Connection
     init {
       try {
