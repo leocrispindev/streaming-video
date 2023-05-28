@@ -1,13 +1,16 @@
 package service
 
+import model.VideoDTO
 import model.VideoInfo
 
 interface Admin {
 
-    fun insert(videoInfo: VideoInfo): Int
-    fun update(videoInfo: VideoInfo): Int // Deve retornar o objeto
-
-    fun upload() // Realiza o upload do arquivo
+    fun insert(video: VideoDTO): Int
+    fun update(video: VideoDTO)
 
     fun index(videoInfo: VideoInfo) : Int// Indexa o conteudo
+
+    fun getAll() : ArrayList<VideoInfo>
+
+    fun delete(id : Int)
 }
