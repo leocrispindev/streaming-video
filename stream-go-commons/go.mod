@@ -2,10 +2,7 @@ module github.com/leocrispindev/streaming-video/stream-go-commons
 
 go 1.17
 
-require (
-	github.com/AlexEidt/Vidio v1.4.2
-	github.com/Shopify/sarama v1.38.1
-)
+require github.com/Shopify/sarama v1.38.1
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
