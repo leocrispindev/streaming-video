@@ -1,4 +1,4 @@
-module github.com/leocrispindev/streamming-video/stream-go-commons
+module github.com/leocrispindev/streaming-video/stream-go-commons
 
 go 1.17
 
