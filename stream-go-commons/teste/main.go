@@ -5,9 +5,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/NygmaC/streamming-video/stream-go-commons/pkg/broker/consumer"
-	"github.com/NygmaC/streamming-video/stream-go-commons/pkg/broker/producer"
 	"github.com/Shopify/sarama"
+	"github.com/leocrispindev/streamming-video/stream-go-commons/pkg/broker/consumer"
+	"github.com/leocrispindev/streamming-video/stream-go-commons/pkg/broker/producer"
 
 	vidio "github.com/AlexEidt/Vidio"
 )

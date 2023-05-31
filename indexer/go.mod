@@ -1,11 +1,10 @@
-module github.com/leocrispindev/streaming-video/fileSentry
+module github.com/leocrispindev/streaming-video/indexer
 
 go 1.20
 
 require (
 	github.com/leocrispindev/streamming-video/stream-go-commons v0.0.0-20230411221621-a9b97fbbd249
 	github.com/Shopify/sarama v1.38.1
-	github.com/fsnotify/fsnotify v1.6.0
 	github.com/joho/godotenv v1.5.1
 )
 

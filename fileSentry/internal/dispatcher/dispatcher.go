@@ -7,9 +7,9 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/NygmaC/streaming-video/fileSentry/internal/cache"
-	"github.com/NygmaC/streaming-video/fileSentry/internal/model"
-	"github.com/NygmaC/streaming-video/fileSentry/internal/producer"
+	"github.com/leocrispindev/streaming-video/fileSentry/internal/cache"
+	"github.com/leocrispindev/streaming-video/fileSentry/internal/model"
+	"github.com/leocrispindev/streaming-video/fileSentry/internal/producer"
 )
 
 var fileChannel chan string

@@ -6,11 +6,11 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/NygmaC/streaming-video/fileSentry/internal/cache"
-	"github.com/NygmaC/streaming-video/fileSentry/internal/generator"
-	"github.com/NygmaC/streaming-video/fileSentry/internal/model"
-	"github.com/NygmaC/streaming-video/fileSentry/internal/observer"
-	utils "github.com/NygmaC/streaming-video/fileSentry/internal/util"
+	"github.com/leocrispindev/streaming-video/fileSentry/internal/cache"
+	"github.com/leocrispindev/streaming-video/fileSentry/internal/generator"
+	"github.com/leocrispindev/streaming-video/fileSentry/internal/model"
+	"github.com/leocrispindev/streaming-video/fileSentry/internal/observer"
+	utils "github.com/leocrispindev/streaming-video/fileSentry/internal/util"
 )
 
 var fileGenerator *generator.Generator
