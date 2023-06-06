@@ -20,15 +20,15 @@ func (v *Video) Validate() []error {
 	var errs []error
 
 	if utils.IsEmptyString(v.Repository) {
-		errs = append(errs, errors.New("Field [repository] cannot be empty"))
+		errs = append(errs, errors.New("Field repository cannot be empty"))
 	}
 
 	if utils.IsEmptyString(v.Descricao) {
-		errs = append(errs, errors.New("Field [descricao] cannot be empty"))
+		errs = append(errs, errors.New("Field descricao cannot be empty"))
 	}
 
 	if utils.IsEmptyString(v.Titulo) {
-		errs = append(errs, errors.New("Field [titulo] cannot be empty"))
+		errs = append(errs, errors.New("Field titulo cannot be empty"))
 	}
 
 	return errs

@@ -22,7 +22,7 @@ var timeout time.Duration
 func Init() {
 	cfg := elastic.Config{
 		Addresses: []string{
-			"http://localhost:9200",
+			os.Getenv("KAFKA_INDEXER_TOPIC"),
 		},
 		// ...
 	}
@@ -46,6 +46,7 @@ func Init() {
 	timeout = time.Duration(timeconvert * float64(time.Second))
 }
 
+// Index document in elasticsearch
 func Index(document model.Video) {
 
 	errorsValidate := document.Validate()
@@ -67,7 +68,6 @@ func Index(document model.Video) {
 		return
 	}
 
-	// Set up the request object.
 	req := esapi.IndexRequest{
 		DocumentID: fmt.Sprint(document.ID),
 		Index:      document.Repository,
@@ -76,7 +76,6 @@ func Index(document model.Video) {
 		Timeout:    timeout,
 	}
 
-	// Perform the request with the client.
 	res, err := req.Do(context.Background(), es)
 
 	if err != nil {
@@ -87,16 +86,53 @@ func Index(document model.Video) {
 	if res.IsError() {
 		log.Printf("[%s] Error indexing document", res.Status())
 	} else {
-		// Deserialize the response into a map.
 		var r map[string]interface{}
 		if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
 			log.Printf("Error parsing the response body: %s", err)
+
 		} else {
-			// Print the response status and indexed document version.
 			log.Printf("[%s] %s; version=%d", res.Status(), r["result"], int(r["_version"].(float64)))
+
 		}
 	}
 	if err != nil {
 		log.Fatalf("Error getting response: %s", err)
 	}
+}
+
+// Delete document from elasticsearch
+func Delete(data model.DeleteVideo) {
+
+	// Create delete request
+	req := esapi.DeleteRequest{
+		Index:      data.Repository,
+		DocumentID: fmt.Sprint(data.ID),
+		Timeout:    timeout,
+	}
+
+	res, err := req.Do(context.Background(), es)
+
+	// Handle with response
+	if err != nil {
+		fmt.Printf("Delete error for ID: %d\nMessage: %s\n", data.ID, err.Error())
+		return
+	}
+
+	if res.IsError() {
+		log.Printf("[%s] Error delete document, ID %d", res.Status(), data.ID)
+
+	} else {
+		var r map[string]interface{}
+		if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
+			log.Printf("Error parsing the response body: %s", err)
+
+		} else {
+			log.Printf("[%s] %s; version=%d", res.Status(), r["result"], int(r["_version"].(float64)))
+
+		}
+	}
+	if err != nil {
+		log.Fatalf("Error getting response: %s", err)
+	}
+
 }
