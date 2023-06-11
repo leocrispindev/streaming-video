@@ -29,11 +29,13 @@ object Broker {
     fun abortTransaction() {
         producer.abortTransaction()
     }
-    fun sendSynchronous(topic: String, doc : Document) {
-        val key = "video-id-" + doc.videoInfo.id
 
-        producer.send(ProducerRecord( topic, key, doc)
-        )
+    fun commit() {
+        producer.commitTransaction()
+    }
+    fun send(topic: String, doc : Document) {
+
+        producer.send(ProducerRecord( topic, doc.key, doc))
     }
 
 
