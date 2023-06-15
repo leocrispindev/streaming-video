@@ -21,7 +21,7 @@ class VideoDAO {
                 it[titulo] = video.titulo
                 it[descricao] = video.descricao
                 it[category] = video.category
-                it[indexless] = video.indexless == 1
+                it[indexless] = video.indexless
                 it[duration] = video.duration
             } get VideoInfoTb.id
 
@@ -55,7 +55,7 @@ class VideoDAO {
                     descricao = row[VideoInfoTb.descricao],
                     category = row[VideoInfoTb.category],
                     duration = row[VideoInfoTb.duration],
-                    indexless = if(row[VideoInfoTb.indexless]) 1 else 0
+                    indexless = row[VideoInfoTb.indexless]
                 )
 
                 result.add(videoInfo)

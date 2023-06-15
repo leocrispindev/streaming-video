@@ -1,3 +1,3 @@
 package model
 
-data class Document(var action : Int, var videoInfo: VideoInfo)
+data class Document(var action : Int, val id: Int, val key: String, var videoInfo: VideoInfo?)

@@ -6,12 +6,14 @@ import model.VideoInfo
 import org.apache.kafka.common.errors.ProducerFencedException
 import service.queue.Broker
 
-class IndexerImpl : Indexer {
+class   IndexerImpl : Indexer {
 
-    val producer = Broker
-    val index = Properties.TOPIC_INDEX.getValue()
+    private val producer = Broker
+    private val index = Properties.TOPIC_INDEX.getValue()
     override fun index(videoInfo: VideoInfo) {
-        producer.initTransaction()
+
+        if (!videoInfo.indexless)
+            return
 
         val id = videoInfo.id ?: throw Exception("Video ID cannot be empty")
 
@@ -32,8 +34,6 @@ class IndexerImpl : Indexer {
     }
 
     override fun delete(id: Int) {
-        producer.initTransaction()
-
         val key = "video-index-id-" + id
         try {
             producer.beginTransaction()

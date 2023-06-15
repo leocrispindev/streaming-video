@@ -8,11 +8,21 @@ import java.sql.SQLException
 object AdminImpl : Admin {
 
     private var videoDAO = VideoDAO()
+
+    private var indexer = IndexerImpl()
     override fun insert(video: VideoDTO): Int {
+        return try {
+            val vd = VideoInfo(id = null, titulo = video.titulo, descricao = video.descricao, category = video.category, duration = 0.0, indexless = video.indexless)
+            vd.id = videoDAO.insert(vd)
 
-        val vd = VideoInfo(id = null, titulo = video.titulo, descricao = video.descricao, category = video.category, duration = 0.0, indexless = video.indexless)
+            indexer.index(vd)
 
-        return videoDAO.insert(vd)
+            vd.id!!
+
+        }catch (e : SQLException) {
+            println("Error on video update [id]=${video.id}")
+            -1
+        }
     }
 
     override fun update(video: VideoDTO) {
@@ -20,13 +30,11 @@ object AdminImpl : Admin {
             val vd = VideoInfo(id = video.id, titulo = video.titulo, descricao = video.descricao, category = video.category)
 
             videoDAO.update(vd)
-        }catch (e : SQLException) {
-            throw SQLException("Error on update video", e)
-        }
-    }
 
-    override fun index(videoInfo: VideoInfo): Int {
-        TODO("Not yet implemented")
+            indexer.index(videoInfo = vd)
+        }catch (e : SQLException) {
+            println("Error on video update [id]=${video.id}")
+        }
     }
 
     override fun getAll(): ArrayList<VideoInfo> {
@@ -34,7 +42,9 @@ object AdminImpl : Admin {
     }
 
     override fun delete(id: Int) {
-       videoDAO.delete(id)
+        videoDAO.delete(id)
+
+        indexer.delete(id)
     }
 
 

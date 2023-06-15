@@ -4,7 +4,7 @@ import com.google.gson.Gson
 import model.Document
 import org.apache.kafka.common.serialization.Serializer
 
-object DocumentSerializer : Serializer<Document> {
+class DocumentSerializer : Serializer<Document> {
     override fun serialize(topic: String?, data: Document?): ByteArray? {
 
         try {
