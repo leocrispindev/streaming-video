@@ -6,7 +6,14 @@ import (
 	"github.com/leocrispindev/streaming-video/indexer/internal/utils"
 )
 
-type Video struct {
+type VideoData struct {
+	Action    int        `json:"action"`
+	ID        int        `json:"id"`
+	Key       string     `json:"key"`
+	VideoInfo *VideoInfo `json:"videoInfo,omitempty"`
+}
+
+type VideoInfo struct {
 	ID         int     `json:"id"`
 	Titulo     string  `json:"titulo"`
 	Descricao  string  `json:"descricao"`
@@ -16,7 +23,7 @@ type Video struct {
 	Repository string  `json:"repository"`
 }
 
-func (v *Video) Validate() []error {
+func (v *VideoInfo) Validate() []error {
 	var errs []error
 
 	if utils.IsEmptyString(v.Repository) {

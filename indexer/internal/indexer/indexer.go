@@ -22,7 +22,7 @@ var timeout time.Duration
 func Init() {
 	cfg := elastic.Config{
 		Addresses: []string{
-			os.Getenv("KAFKA_INDEXER_TOPIC"),
+			os.Getenv("ELASTICSEARCH_HOST"),
 		},
 		// ...
 	}
@@ -47,9 +47,10 @@ func Init() {
 }
 
 // Index document in elasticsearch
-func Index(document model.Video) {
+func Index(document model.VideoData) {
+	videoInfo := document.VideoInfo
 
-	errorsValidate := document.Validate()
+	errorsValidate := videoInfo.Validate()
 
 	if len(errorsValidate) > 0 {
 		var errorMessages []string
@@ -61,16 +62,16 @@ func Index(document model.Video) {
 		return
 	}
 
-	body, err := json.Marshal(document)
+	body, err := json.Marshal(videoInfo)
 
 	if err != nil {
-		fmt.Printf("Parse index error for ID: %d\nMessage: %s\n", document.ID, err.Error())
+		fmt.Printf("Parse index error for KEY: %s\nMessage: %s\n", document.Key, err.Error())
 		return
 	}
 
 	req := esapi.IndexRequest{
 		DocumentID: fmt.Sprint(document.ID),
-		Index:      document.Repository,
+		Index:      videoInfo.Repository,
 		Body:       bytes.NewReader(body),
 		Refresh:    "true",
 		Timeout:    timeout,
@@ -79,7 +80,7 @@ func Index(document model.Video) {
 	res, err := req.Do(context.Background(), es)
 
 	if err != nil {
-		fmt.Printf("index error for ID: %d\nMessage: %s\n", document.ID, err.Error())
+		fmt.Printf("index error for key: %s\nMessage: %s\n", document.Key, err.Error())
 		return
 	}
 
@@ -91,7 +92,7 @@ func Index(document model.Video) {
 			log.Printf("Error parsing the response body: %s", err)
 
 		} else {
-			log.Printf("[%s] %s; version=%d", res.Status(), r["result"], int(r["_version"].(float64)))
+			log.Printf("index success for [KEY]=%s [%s] %s; version=%d", document.Key, res.Status(), r["result"], int(r["_version"].(float64)))
 
 		}
 	}

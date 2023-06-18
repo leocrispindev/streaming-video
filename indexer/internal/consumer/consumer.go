@@ -24,7 +24,8 @@ func handleMessage(msgs <-chan *sarama.ConsumerMessage) {
 	fmt.Println("Consumer OK")
 
 	for msg := range msgs {
-		var video = model.Video{}
+		println("Message")
+		var video = model.VideoData{}
 
 		err := parse(msg.Value, &video)
 
@@ -38,7 +39,7 @@ func handleMessage(msgs <-chan *sarama.ConsumerMessage) {
 	}
 }
 
-func parse(value []byte, p *model.Video) error {
+func parse(value []byte, p *model.VideoData) error {
 	fmt.Println(string(value))
 	return json.Unmarshal(value, p)
 }
