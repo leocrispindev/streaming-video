@@ -1,7 +1,7 @@
 package model
 
 data class VideoInfo(
-    val id: Int?,
+    var id: Int?,
     val titulo: String,
     var descricao: String,
     val category: Int,

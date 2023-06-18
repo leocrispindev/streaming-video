@@ -27,6 +27,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:0.40.1")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.40.1")
     implementation("mysql:mysql-connector-java:8.0.26")
+    implementation("org.apache.kafka:kafka-clients:3.4.1")
     //implementation("gradle.plugin.com.jetbrains.exposed.gradle:plugin:0.2.1")
 }
 
