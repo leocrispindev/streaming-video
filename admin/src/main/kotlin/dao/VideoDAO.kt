@@ -18,11 +18,12 @@ class VideoDAO {
 
         val insertid =  transaction (db = db){
             VideoInfoTb.insert {
-                it[titulo] = video.titulo
-                it[descricao] = video.descricao
+                it[title] = video.title
+                it[synopsis] = video.synopsis
                 it[category] = video.category
                 it[indexless] = video.indexless
                 it[duration] = video.duration
+                it[extension] = video.extension
             } get VideoInfoTb.id
 
         }
@@ -32,10 +33,13 @@ class VideoDAO {
 
     fun update(video : VideoInfo) {
         transaction {
+
             VideoInfoTb.update(where = {VideoInfoTb.id eq video.id}) {
-                it[titulo] = video.titulo
-                it[descricao] = video.descricao
+                it[title] = video.title
+                it[synopsis] = video.synopsis
                 it[category] = video.category
+                it[indexless] = video.indexless
+                it[extension] = video.extension
             }
         }
     }
@@ -51,11 +55,12 @@ class VideoDAO {
 
                 val videoInfo = VideoInfo(
                     id = row[VideoInfoTb.id].value,
-                    titulo = row[VideoInfoTb.titulo],
-                    descricao = row[VideoInfoTb.descricao],
+                    title = row[VideoInfoTb.title],
+                    synopsis = row[VideoInfoTb.synopsis],
                     category = row[VideoInfoTb.category],
                     duration = row[VideoInfoTb.duration],
-                    indexless = row[VideoInfoTb.indexless]
+                    indexless = row[VideoInfoTb.indexless],
+                    extension = row[VideoInfoTb.extension]
                 )
 
                 result.add(videoInfo)

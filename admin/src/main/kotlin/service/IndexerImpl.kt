@@ -21,7 +21,7 @@ class   IndexerImpl : Indexer {
         try {
             producer.beginTransaction()
 
-            val document = Document(action = 1, key = key, id = id, videoInfo = videoInfo)
+            val document = Document(action = 1, key = key, id = id, repository = "video", videoInfo = videoInfo)
 
             producer.send(index, document)
 
@@ -38,7 +38,7 @@ class   IndexerImpl : Indexer {
         try {
             producer.beginTransaction()
 
-            val document = Document(action = 2, key = key, id = id ,videoInfo = null)
+            val document = Document(action = 2, key = key, id = id, repository = "video" ,videoInfo = null)
 
             producer.send(index, document)
 
