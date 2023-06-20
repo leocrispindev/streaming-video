@@ -17,17 +17,18 @@ type Document struct {
 type VideoInfo struct {
 	ID        int    `json:"id"`
 	Title     string `json:"title"`
-	Sinopse   string `json:"sinopse"`
+	Synopsis  string `json:"synopsis"`
 	Category  int    `json:"category"`
 	Duration  int    `json:"duration"`
 	Indexless bool   `json:"indexless"`
+	Extension string `json:"extension"`
 }
 
 func (v *VideoInfo) Validate() []error {
 	var errs []error
 
-	if utils.IsEmptyString(v.Sinopse) {
-		errs = append(errs, errors.New("Field [SINOPSE] cannot be empty"))
+	if utils.IsEmptyString(v.Synopsis) {
+		errs = append(errs, errors.New("Field [SYNOPSIS] cannot be empty"))
 	}
 
 	if utils.IsEmptyString(v.Title) {
