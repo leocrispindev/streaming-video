@@ -1,31 +1,28 @@
----
 version: '3'
 services:
-  # zookeeper:
-  #   image: confluentinc/cp-zookeeper:7.3.2
-  #   container_name: zookeeper
-  #   environment:
-  #     ZOOKEEPER_CLIENT_PORT: 2181
-  #     ZOOKEEPER_TICK_TIME: 2000
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.2
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
 
-  # broker:
-  #   image: confluentinc/cp-kafka:7.3.2
-  #   container_name: broker
-  #   ports:
-  #   # To learn about configuring Kafka for access across networks see
-  #   # https://www.confluent.io/blog/kafka-client-cannot-connect-to-broker-on-aws-on-docker-etc/
-  #     - "9092:9092"
-  #   depends_on:
-  #     - zookeeper
-  #   environment:
-  #     KAFKA_BROKER_ID: 1
-  #     KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
-  #     KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
-  #     KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092
-  #     KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-  #     KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-  #     KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-  #     KAFKA_MESSAGE_MAX_BYTES: 6000000
+  broker:
+    image: confluentinc/cp-kafka:7.3.2
+    container_name: broker
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_MESSAGE_MAX_BYTES: 6000000
 
   mysql-database:
     image: mysql-stream
@@ -33,10 +30,46 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: always
+    ports:
+      - target: 3306
+        published: 3306
     environment:
       MYSQL_ROOT_PASSWORD: mysql
       MYSQL_DATABASE: stream_content
       MYSQL_USER: mysql
       MYSQL_PASSWORD: mysql
     volumes:
-      - ./data:/var/lib/mysql
+      - /etc/data:/var/lib/mysql
+
+  elasticsearch:
+    image: elasticsearch:8.2.2
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - xpack.security.enabled=false
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    ports:
+      - target: 9200
+        published: 9200
+    networks:
+      - elastic
+
+  kibana:
+    image: kibana:8.2.2
+    ports:
+      - target: 5601
+        published: 5601
+    depends_on:
+      - elasticsearch
+    networks:
+      - elastic
+
+volumes:
+  es_data:
+    driver: local
+
+networks:
+  elastic:
+    name: elastic
+    driver: bridge
