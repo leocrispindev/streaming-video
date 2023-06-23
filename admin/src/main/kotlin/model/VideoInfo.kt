@@ -2,12 +2,13 @@ package model
 
 data class VideoInfo(
     var id: Int?,
-    val titulo: String,
-    var descricao: String,
+    val title: String,
+    var synopsis: String,
     val category: Int,
-    val duration: Double,
-    var indexless: Boolean
+    val duration: Int,
+    var indexless: Boolean,
+    var extension: String
 ) {
-    constructor(id: Int?, titulo: String, descricao: String, category: Int) :
-            this(id, titulo, descricao, category, 0.0, false)
+    constructor(id: Int?, title: String, synopsis: String, category: Int, extension: String) :
+            this(id, title, synopsis, category, 0, false, extension)
 }

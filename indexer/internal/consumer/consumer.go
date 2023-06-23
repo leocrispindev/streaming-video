@@ -25,7 +25,7 @@ func handleMessage(msgs <-chan *sarama.ConsumerMessage) {
 
 	for msg := range msgs {
 		println("Message")
-		var video = model.VideoData{}
+		var video = model.Document{}
 
 		err := parse(msg.Value, &video)
 
@@ -35,11 +35,20 @@ func handleMessage(msgs <-chan *sarama.ConsumerMessage) {
 
 		}
 
-		go indexer.Index(video)
+		if video.Action == 1 {
+			indexer.Index(video)
+
+		} else if video.Action == 2 {
+			indexer.Delete(video)
+
+		} else {
+			fmt.Println("Action not mapped")
+		}
+
 	}
 }
 
-func parse(value []byte, p *model.VideoData) error {
+func parse(value []byte, p *model.Document) error {
 	fmt.Println(string(value))
 	return json.Unmarshal(value, p)
 }

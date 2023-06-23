@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 
@@ -35,22 +34,20 @@ func Init() {
 
 	es = client
 
-	timeoutStr := os.Getenv("INDEXER_TIMEOUT")
+	// timeoutStr := os.Getenv("INDEXER_TIMEOUT")
 
-	timeconvert, err := strconv.ParseFloat(timeoutStr, 64)
-	if err != nil {
-		fmt.Println("Failed to parse INDEXER_TIMEOUT:", err)
-		return
-	}
-
-	timeout = time.Duration(timeconvert * float64(time.Second))
+	// timeconvert, err := strconv.ParseInt(timeoutStr, 0, 32)
+	// if err != nil {
+	// 	fmt.Println("Failed to parse INDEXER_TIMEOUT:", err)
+	// 	return
+	// }
+	// timeout = time.Duration(timeconvert) * time.Second
 }
 
 // Index document in elasticsearch
-func Index(document model.VideoData) {
-	videoInfo := document.VideoInfo
+func Index(document model.Document) {
 
-	errorsValidate := videoInfo.Validate()
+	errorsValidate := document.Validate()
 
 	if len(errorsValidate) > 0 {
 		var errorMessages []string
@@ -58,7 +55,21 @@ func Index(document model.VideoData) {
 			errorMessages = append(errorMessages, err.Error())
 		}
 
-		fmt.Printf("Validate error for ID: %d\nMessage: %s\n", document.ID, strings.Join(errorMessages, "\n"))
+		fmt.Printf("Validate error for KEY: %s\nMessage: %s\n", document.Key, strings.Join(errorMessages, "\n"))
+		return
+	}
+
+	videoInfo := document.VideoInfo
+
+	errorsValidate = videoInfo.Validate()
+
+	if len(errorsValidate) > 0 {
+		var errorMessages []string
+		for _, err := range errorsValidate {
+			errorMessages = append(errorMessages, err.Error())
+		}
+
+		fmt.Printf("Validate error for KEY: %s\nMessage: %s\n", document.Key, strings.Join(errorMessages, "\n"))
 		return
 	}
 
@@ -69,12 +80,14 @@ func Index(document model.VideoData) {
 		return
 	}
 
+	println(timeout.String())
+
 	req := esapi.IndexRequest{
-		DocumentID: fmt.Sprint(document.ID),
-		Index:      videoInfo.Repository,
+		DocumentID: document.Key,
+		Index:      document.Repository,
 		Body:       bytes.NewReader(body),
 		Refresh:    "true",
-		Timeout:    timeout,
+		//Timeout:    timeout.String(),
 	}
 
 	res, err := req.Do(context.Background(), es)
@@ -85,7 +98,7 @@ func Index(document model.VideoData) {
 	}
 
 	if res.IsError() {
-		log.Printf("[%s] Error indexing document", res.Status())
+		log.Printf("[%s] Error indexing document %s", res.Status(), res.String())
 	} else {
 		var r map[string]interface{}
 		if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
@@ -102,25 +115,35 @@ func Index(document model.VideoData) {
 }
 
 // Delete document from elasticsearch
-func Delete(data model.DeleteVideo) {
+func Delete(document model.Document) {
 
+	errorsValidate := document.Validate()
+
+	if len(errorsValidate) > 0 {
+		var errorMessages []string
+		for _, err := range errorsValidate {
+			errorMessages = append(errorMessages, err.Error())
+		}
+
+		fmt.Printf("Delete Validate error for KEY: %s\nMessage: %s\n", document.Key, strings.Join(errorMessages, "\n"))
+		return
+	}
 	// Create delete request
 	req := esapi.DeleteRequest{
-		Index:      data.Repository,
-		DocumentID: fmt.Sprint(data.ID),
-		Timeout:    timeout,
+		Index:      document.Repository,
+		DocumentID: document.Key,
 	}
 
 	res, err := req.Do(context.Background(), es)
 
 	// Handle with response
 	if err != nil {
-		fmt.Printf("Delete error for ID: %d\nMessage: %s\n", data.ID, err.Error())
+		fmt.Printf("Delete error for KEY: %s\nMessage: %s\n", document.Key, err.Error())
 		return
 	}
 
 	if res.IsError() {
-		log.Printf("[%s] Error delete document, ID %d", res.Status(), data.ID)
+		log.Printf("[%s] Error delete document, KEY %s", res.Status(), document.Key)
 
 	} else {
 		var r map[string]interface{}
