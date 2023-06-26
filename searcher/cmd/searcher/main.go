@@ -10,6 +10,7 @@ import (
 
 func main() {
 	config.Init()
+	controller.Init()
 
 	http.HandleFunc("/search", controller.Search)
 
