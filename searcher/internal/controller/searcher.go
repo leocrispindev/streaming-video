@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"strings"
 
 	gUuid "github.com/google/uuid"
@@ -24,6 +25,10 @@ func Search(resp http.ResponseWriter, req *http.Request) {
 
 	searchers := map[string]interface{}{}
 
+	size := 10
+
+	from := 0
+
 	if queryString.Has("fields") {
 		fields = strings.Split(queryString.Get("fields"), ",")
 	}
@@ -37,12 +42,25 @@ func Search(resp http.ResponseWriter, req *http.Request) {
 
 	}
 
+	if queryString.Has("size") {
+		size, _ = strconv.Atoi(queryString.Get("size"))
+
+	}
+
+	if queryString.Has("from") {
+		from, _ = strconv.Atoi(queryString.Get("from"))
+		from += 1
+
+	}
+
 	searchQuery := model.Query{
 		Fields:    fields,
 		Searchers: searchers,
+		Size:      size,
+		From:      from,
 	}
 
-	docs, err := searcher.Search(searchQuery)
+	docs, next, err := searcher.Search(searchQuery)
 
 	resp.Header().Set("Content-type", "application/json")
 
@@ -59,9 +77,9 @@ func Search(resp http.ResponseWriter, req *http.Request) {
 		resp.Write(body)
 		return
 	} else {
-		println("AQUI")
 		response.Message = "success"
 		response.Docs = docs
+		response.From = from
 
 		body, _ := json.Marshal(response)
 
