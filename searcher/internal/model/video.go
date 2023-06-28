@@ -1,11 +1,11 @@
 package model
 
 type Video struct {
-	ID        int    `json:"id"`
-	Titulo    string `json:"title"`
-	Sinopse   string `json:"synopsis"`
-	Categoria int    `json:"category"`
-	Duracao   int    `json:"duration"`
-	SemIndice bool   `json:"indexless"`
-	Extension string `json:"extension"`
+	ID        int    `json:"id,omitempty"`
+	Titulo    string `json:"title,omitempty"`
+	Sinopse   string `json:"synopsis,omitempty"`
+	Categoria int    `json:"category,omitempty"`
+	Duracao   int    `json:"duration,omitempty"`
+	SemIndice bool   `json:"indexless,omitempty"`
+	Extension string `json:"extension,omitempty"`
 }
