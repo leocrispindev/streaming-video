@@ -12,7 +12,6 @@ import (
 	elastic "github.com/elastic/go-elasticsearch/v8"
 	"github.com/elastic/go-elasticsearch/v8/esapi"
 	"github.com/leocrispindev/streaming-video/searcher/internal/model"
-	"github.com/leocrispindev/streaming-video/searcher/internal/util"
 )
 
 var es *elastic.Client
@@ -113,12 +112,6 @@ func Search(queryEngine model.Query) ([]model.Video, int, error) {
 	videosMap := []model.Video{}
 
 	hits := r["hits"].(map[string]interface{})
-
-	totalInterface := hits["total"].(map[string]interface{})["value"]
-
-	total := util.ConvertToInt(totalInterface)
-
-	println(total)
 
 	for _, hit := range hits["hits"].([]interface{}) {
 		source := hit.(map[string]interface{})["_source"]
