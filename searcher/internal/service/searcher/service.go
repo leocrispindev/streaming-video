@@ -8,11 +8,11 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strings"
 
 	elastic "github.com/elastic/go-elasticsearch/v8"
 	"github.com/elastic/go-elasticsearch/v8/esapi"
 	"github.com/leocrispindev/streaming-video/searcher/internal/model"
+	"github.com/leocrispindev/streaming-video/searcher/internal/util"
 )
 
 var es *elastic.Client
@@ -34,28 +34,40 @@ func Init() {
 	es = client
 }
 
-func Search(queryEngine model.Query) ([]map[string]interface{}, error) {
+func Search(queryEngine model.Query) ([]model.Video, int, error) {
 
 	var r map[string]interface{}
 
 	var body bytes.Buffer
 
+	// large scale  can be extremely dangerous and slow
+	matchQuery := "match_all"
+
+	if len(queryEngine.Searchers) > 0 {
+		matchQuery = "match"
+	}
+
+	// Pagination
+	queryEngine.From = (queryEngine.Page - 1) * queryEngine.Size
+
 	query := map[string]interface{}{
+		"size": queryEngine.Size,
+		"from": queryEngine.From,
 		"query": map[string]interface{}{
-			"match": queryEngine.Searchers,
+			matchQuery: queryEngine.Searchers,
 		},
 	}
 
 	bodyQuery, err := json.Marshal(query)
 	if err != nil {
 		log.Fatalf("Error converting query to JSON: %s", err)
-		return nil, err
+		return nil, 0, err
 	}
 
 	_, err = body.Write(bodyQuery)
 	if err != nil {
 		log.Fatalf("Error writing body: %s", err)
-		return nil, err
+		return nil, 0, err
 	}
 
 	req := esapi.SearchRequest{
@@ -65,13 +77,11 @@ func Search(queryEngine model.Query) ([]map[string]interface{}, error) {
 		SourceIncludes: queryEngine.Fields,
 	}
 
-	println(strings.Join(req.StoredFields, ","))
-
 	res, err := req.Do(context.Background(), es)
 
 	//TODO tratar err
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	if res.IsError() {
@@ -86,7 +96,7 @@ func Search(queryEngine model.Query) ([]map[string]interface{}, error) {
 				e["error"].(map[string]interface{})["reason"],
 			)
 
-			return nil, errors.New(msg)
+			return nil, 0, errors.New(msg)
 		}
 	}
 
@@ -95,26 +105,35 @@ func Search(queryEngine model.Query) ([]map[string]interface{}, error) {
 	}
 
 	if err != nil {
-		return nil, err
-	}
-
-	jsonString, err := json.Marshal(r)
-	if err != nil {
-		fmt.Println("Erro ao converter para JSON:", err)
+		return nil, 0, err
 	}
 
 	// Exibir a string JSON resultante
-	fmt.Println(string(jsonString))
 
-	for _, hit := range r["hits"].(map[string]interface{})["hits"].([]interface{}) {
-		jsonString, err := json.Marshal(hit)
+	videosMap := []model.Video{}
+
+	hits := r["hits"].(map[string]interface{})
+
+	totalInterface := hits["total"].(map[string]interface{})["value"]
+
+	total := util.ConvertToInt(totalInterface)
+
+	println(total)
+
+	for _, hit := range hits["hits"].([]interface{}) {
+		source := hit.(map[string]interface{})["_source"]
+
+		src, err := json.Marshal(source)
 		if err != nil {
 			fmt.Println("Erro ao converter para JSON:", err)
 		}
 
+		video := model.Video{}
+
+		json.Unmarshal(src, &video)
 		// Exibir a string JSON resultante
-		fmt.Println(string(jsonString))
+		videosMap = append(videosMap, video)
 	}
 
-	return []map[string]interface{}{}, nil
+	return videosMap, queryEngine.Page + 1, nil
 }

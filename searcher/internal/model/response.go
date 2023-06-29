@@ -1,7 +1,8 @@
 package model
 
 type Response struct {
-	Uuid    string
-	Docs    []map[string]interface{}
-	Message string
+	Uuid    string  `json:"uuid"`
+	Docs    []Video `json:"docs"`
+	Page    int     `json:"page"`
+	Message string  `json:"message"`
 }

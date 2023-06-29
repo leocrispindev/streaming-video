@@ -27,7 +27,7 @@ func Search(resp http.ResponseWriter, req *http.Request) {
 
 	size := 10
 
-	from := 0
+	page := 1
 
 	if queryString.Has("fields") {
 		fields = strings.Split(queryString.Get("fields"), ",")
@@ -47,9 +47,8 @@ func Search(resp http.ResponseWriter, req *http.Request) {
 
 	}
 
-	if queryString.Has("from") {
-		from, _ = strconv.Atoi(queryString.Get("from"))
-		from += 1
+	if queryString.Has("page") {
+		page, _ = strconv.Atoi(queryString.Get("page"))
 
 	}
 
@@ -57,7 +56,7 @@ func Search(resp http.ResponseWriter, req *http.Request) {
 		Fields:    fields,
 		Searchers: searchers,
 		Size:      size,
-		From:      from,
+		Page:      page,
 	}
 
 	docs, next, err := searcher.Search(searchQuery)
@@ -79,7 +78,7 @@ func Search(resp http.ResponseWriter, req *http.Request) {
 	} else {
 		response.Message = "success"
 		response.Docs = docs
-		response.From = from
+		response.Page = next
 
 		body, _ := json.Marshal(response)
 
