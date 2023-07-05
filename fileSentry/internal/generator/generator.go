@@ -32,7 +32,8 @@ func New() *Generator {
 	g.storagePath = os.Getenv("FILE_STORAGE")
 
 	g.AddParameter("c", "copy").AddParameter("f", "segment").
-		AddParameter("segment_time", os.Getenv("FILE_SEGMENT_TIME")).AddParameter("reset_timestamps", "1").AddParameter("segment_format", "mpegts")
+		AddParameter("segment_time", os.Getenv("FILE_SEGMENT_TIME")).AddParameter("reset_timestamps", "1").AddParameter("segment_format", "mp4").
+		AddParameter("c", "v libx264").AddParameter("preset", "ultrafast")
 
 	return &g
 }
@@ -59,7 +60,7 @@ func (g *Generator) Exec(filePath string, exportPath string, fileID string) (str
 	}
 
 	//Add output
-	filFinalName := fmt.Sprintf("%s_%%03d.ts", fileID)
+	filFinalName := fmt.Sprintf("%s_%%03d.mp4", fileID)
 
 	args = append(args, filepath.Join(exportPath, filFinalName))
 
