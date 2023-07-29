@@ -33,7 +33,7 @@ func New() *Generator {
 
 	g.AddParameter("c", "copy").AddParameter("f", "segment").
 		AddParameter("segment_time", os.Getenv("FILE_SEGMENT_TIME")).AddParameter("reset_timestamps", "1").AddParameter("segment_format", "mp4").
-		AddParameter("c", "v libx264").AddParameter("preset", "ultrafast")
+		AddParameter("c:", "v libx264").AddParameter("preset", "ultrafast")
 
 	return &g
 }

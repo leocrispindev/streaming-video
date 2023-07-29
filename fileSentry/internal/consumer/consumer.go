@@ -7,7 +7,7 @@ import (
 	"github.com/Shopify/sarama"
 	"github.com/leocrispindev/streaming-video/fileSentry/internal/handler"
 	"github.com/leocrispindev/streaming-video/fileSentry/internal/model"
-	"github.com/leocrispindev/streamming-video/stream-go-commons/pkg/broker/consumer"
+	"github.com/leocrispindev/streaming-video/stream-go-commons/pkg/broker/consumer"
 )
 
 var proccessConsumer consumer.Consumer
@@ -15,7 +15,7 @@ var proccessConsumer consumer.Consumer
 func Init() {
 	// {"videoName":"video2.mp4", "session":"aaaaaa", "connection": {}}
 
-	proccessConsumer = consumer.CreateConsumer("", "stream-proccess")
+	proccessConsumer = consumer.CreateConsumer("", "stream-content")
 	proccessConsumer.ReadMessage(handleMessage)
 
 }

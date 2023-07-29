@@ -1,5 +1,3 @@
-github.com/leocrispindev/streamming-video/stream-go-commons v0.0.0-20230411221621-a9b97fbbd249 h1:SwMDHaqFCEEUbK5QK36qpizNDL4qrVO4nJm5GvIWe0A=
-github.com/leocrispindev/streamming-video/stream-go-commons v0.0.0-20230411221621-a9b97fbbd249/go.mod h1:YHuMqSeBxncKXtLAog5CY2reFP8K/XGKDLynhcFwU4o=
 github.com/Shopify/sarama v1.38.1 h1:lqqPUPQZ7zPqYlWpTh+LQ9bhYNu2xJL6k1SJN4WVe2A=
 github.com/Shopify/sarama v1.38.1/go.mod h1:iwv9a67Ha8VNa+TifujYoWGxWnu2kNVAQdSdZ4X2o5g=
 github.com/Shopify/toxiproxy/v2 v2.5.0 h1:i4LPT+qrSlKNtQf5QliVjdP08GyAH8+BUIc9gT0eahc=
@@ -42,6 +40,8 @@ github.com/joho/godotenv v1.5.1 h1:7eLL/+HRGLY0ldzfGMeQkb7vMd0as4CfYvUVzLqw0N0=
 github.com/joho/godotenv v1.5.1/go.mod h1:f4LDr5Voq0i2e/R5DDNOoa2zzDfwtkZa6DnEwAbqwq4=
 github.com/klauspost/compress v1.15.14 h1:i7WCKDToww0wA+9qrUZ1xOjp218vfFo3nTU6UHp+gOc=
 github.com/klauspost/compress v1.15.14/go.mod h1:QPwzmACJjUTFsnSHH934V6woptycfrDDJnH7hvFVbGM=
+github.com/leocrispindev/streaming-video/stream-go-commons v0.0.0-20230531184507-a56fc3d95fac h1:ax5++dTyVQDoplOVdYLgCZDaF7rFKuVa5tf3nEzP9nQ=
+github.com/leocrispindev/streaming-video/stream-go-commons v0.0.0-20230531184507-a56fc3d95fac/go.mod h1:skw4lF7Zl1q+dZ51EQ0oiaGITU2xEJ+O9GmP3lCULms=
 github.com/pierrec/lz4/v4 v4.1.17 h1:kV4Ip+/hUBC+8T6+2EgburRtkE9ef4nbY3f4dFhGjMc=
 github.com/pierrec/lz4/v4 v4.1.17/go.mod h1:gZWDp/Ze/IJXGXf23ltt2EXimqmTUXEy0GFuRQyBid4=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=

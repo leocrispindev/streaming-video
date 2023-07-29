@@ -3,7 +3,7 @@ package producer
 import (
 	"fmt"
 
-	"github.com/leocrispindev/streamming-video/stream-go-commons/pkg/broker/producer"
+	"github.com/leocrispindev/streaming-video/stream-go-commons/pkg/broker/producer"
 )
 
 var ProducerLocal producer.Producer
