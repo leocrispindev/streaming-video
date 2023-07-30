@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WebSocket Client</title>
+</head>
+<body>
+  <script>
+    // Classe Message
+    class Message {
+      constructor(videoName, videoId, videoExtension) {
+        this.videoName = videoName;
+        this.videoId = videoId;
+        this.videoExtension = videoExtension;
+        this.session = "id" + Math.random().toString(16).slice(2)
+      }
+    }
+
+    // Dados da mensagem
+    const videoName = 'video1';
+    const videoId = 123;
+    const videoExtension = 'MOV';
+
+    // Construir objeto de mensagem
+    const message = new Message(videoName, videoId, videoExtension);
+
+    // Converter objeto para JSON
+    const jsonMessage = JSON.stringify(message);
+
+    // URL do servidor WebSocket
+    const serverUrl = 'ws://localhost:8080/ws';
+
+    // Criar uma nova conexão WebSocket
+    const ws = new WebSocket(serverUrl);
+
+    // Evento de conexão estabelecida
+    ws.onopen = () => {
+      console.log('Conexão estabelecida com o servidor.');
+
+      // Enviar mensagem JSON para o servidor
+      ws.send(jsonMessage);
+    };
+
+    // Evento de recebimento de mensagem do servidor
+    ws.onmessage = (event) => {
+      alert('Mensagem recebida do servidor:', event.data);
+    };
+
+    // Evento de fechamento da conexão
+    ws.onclose = () => {
+      console.log('Conexão fechada.');
+    };
+  </script>
+</body>
+</html>
