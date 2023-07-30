@@ -27,7 +27,7 @@ func Exec(streamProccess model.Proccess) {
 	videoName := streamProccess.VideoName
 
 	//Path para o video original
-	filePath := fmt.Sprintf("%s/%s.MOV", pathFileSource, videoName)
+	filePath := fmt.Sprintf("%s/%s.%s", pathFileSource, videoName, streamProccess.Extension)
 
 	exportPath := filepath.Join(os.Getenv("FILE_STORAGE"), videoName)
 

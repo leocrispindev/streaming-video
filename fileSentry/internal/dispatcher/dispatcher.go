@@ -1,14 +1,12 @@
 package dispatcher
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"regexp"
 	"strings"
 
 	"github.com/leocrispindev/streaming-video/fileSentry/internal/cache"
-	"github.com/leocrispindev/streaming-video/fileSentry/internal/model"
 	"github.com/leocrispindev/streaming-video/fileSentry/internal/producer"
 )
 
@@ -43,7 +41,7 @@ func dispatch() {
 		//Envia a mensagem informando qual o arrquuivo criado
 		topic := cache.Get(videoID)
 
-		log.Println("Enviando file information para o topic: " + topic)
+		log.Println("Send segment to topic: " + topic)
 
 		msg, err := createNessage(videoID, fileName)
 		if err != nil {
@@ -58,8 +56,9 @@ func dispatch() {
 }
 
 func createNessage(videoID string, filePath string) ([]byte, error) {
-	message := model.NotifyMessage{VideoID: videoID, FileName: filePath}
+	//message := model.NotifyMessage{VideoID: videoID, FileName: filePath}
 
-	return json.Marshal(message)
+	//return json.Marshal(message)
+	return []byte(videoID + "/" + filePath), nil
 
 }
