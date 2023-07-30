@@ -14,10 +14,11 @@ fun Application.configureSockets() {
         masking = false
     }
     routing {
-        webSocket("/ws") { // websocketSession
-            for (frame in incoming) {
+        val watch = Watch
 
-            }
+        webSocket("/ws") { // websocketSession
+            watch.Start(this);
+
         }
     }
 }
