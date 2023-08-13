@@ -36,12 +36,11 @@ object Watch {
             val consumer = Consumer(topicName, videoInfo.session)
             println("Session: " + videoInfo.session)
 
-            println("Consumer criado")
             while (true) run {
-                val records: ConsumerRecords<String, String> = consumer.StartPoll(1);
+                val records: ConsumerRecords<String, String> = consumer.StartPoll(3);
 
                 for (record in records) {
-                    conn.send(record.value())
+                    conn.send("http://cdn.content.delivery:9000/content/"+record.value())
                 }
 
             }

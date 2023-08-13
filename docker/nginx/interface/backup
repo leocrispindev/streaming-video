@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>WebSocket Client</title>
-</head>
-<body>
-  <script>
+<script>
     // Classe Message
     class Message {
       constructor(videoName, videoId, videoExtension) {
@@ -50,5 +44,3 @@
       console.log('Conexão fechada.');
     };
   </script>
-</body>
-</html>

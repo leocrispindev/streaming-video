@@ -37,6 +37,7 @@ object BrokerAdmin {
             throw e
         }
     }
+
      fun topicExist(topicName : String) : Boolean {
        return admin.listTopics().names().get().contains(topicName)
     }

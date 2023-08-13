@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Player de Vídeo em Stream</title>
+</head>
+<body>
+  <video id="videoPlayer" width="640" height="360" controls autoplay>
+    Seu navegador não suporta a tag de vídeo.
+  </video>
+
+  <script>
+    class Message {
+      constructor(videoName, videoId, videoExtension) {
+        this.videoName = videoName;
+        this.videoId = videoId;
+        this.videoExtension = videoExtension;
+        this.session = "id" + Math.random().toString(16).slice(2)
+      }
+    }
+
+    // Dados da mensagem
+    const videoName = 'video1';
+    const videoId = 123;
+    const videoExtension = 'MOV';
+
+    // Construir objeto de mensagem
+    const message = new Message(videoName, videoId, videoExtension);
+    // Converter objeto para JSON
+    const jsonMessage = JSON.stringify(message);
+
+    const mediaSource = new MediaSource();
+  
+    videoPlayer.src = URL.createObjectURL(mediaSource);
+
+    const websocket = new WebSocket('ws://localhost:8080/ws'); // Altere a URL conforme necessário
+
+    mediaSource.addEventListener("sourceopen", () => {
+      const videoSourceBuffer  = mediaSource.addSourceBuffer('video/mp4; codecs="avc1.64001e"');
+    
+      websocket.onopen = () => {
+        console.log('Conexão estabelecida com o servidor WebSocket.');
+        websocket.send(jsonMessage);
+      
+      };
+
+    websocket.onmessage = (event) => {
+      console.log(mediaSource.readyState)
+
+      const videoUrl = event.data; // Recebe a URL do vídeo MP4 do WebSocket
+
+      console.log((videoUrl))
+
+      handleMessageReceived(videoUrl, videoSourceBuffer)
+      
+    };
+
+    websocket.onerror = (error) => {
+      console.error('Erro no WebSocket:', error);
+    };
+    
+    
+    })
+    
+    // Função para fazer o fetch e converter os dados em ArrayBuffer
+async function fetchAndConvertToArrayBuffer(url) {
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`Erro ao buscar os dados. Status: ${response.status}`);
+    }
+
+    const data = await response.arrayBuffer();
+    return data;
+  } catch (error) {
+    console.error('Ocorreu um erro:', error);
+    return null;
+  }
+}
+
+// Função que é chamada quando uma nova mensagem é recebida
+async function handleMessageReceived(url, videoSourceBuffer) {
+  // Supondo que a mensagem contenha a URL dos dados
+ fetchAndConvertToArrayBuffer(url)
+    .then(arrayBuffer => {
+      if (arrayBuffer) {
+        console.log('Dados convertidos para ArrayBuffer:', arrayBuffer);
+        videoSourceBuffer.appendBuffer(arrayBuffer)
+      } else {
+        console.log('Não foi possível buscar e converter os dados.');
+      
+      }
+    });
+
+}
+
+  </script>
+</body>
+</html>

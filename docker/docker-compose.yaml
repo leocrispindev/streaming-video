@@ -65,6 +65,18 @@ services:
     networks:
       - elastic
 
+  nginx:
+    image: nginx
+    build: 
+      context: ./nginx/
+      dockerfile: Dockerfile
+    container_name: nginx-content
+    ports:
+      - "9000:80"
+    volumes:
+    #  - ./nginx.conf:/etc/nginx/conf.d/
+      -  /Users/leonardocrispindeoliveira/Movies/:/usr/share/nginx/html/content
+
 volumes:
   es_data:
     driver: local

@@ -19,6 +19,7 @@ class Consumer {
             it[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = "org.apache.kafka.common.serialization.StringDeserializer"
             it[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = "org.apache.kafka.common.serialization.StringDeserializer"
             it[ConsumerConfig.GROUP_ID_CONFIG] = groupID
+            it[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest"
         }
 
         consumer = KafkaConsumer(prop)
